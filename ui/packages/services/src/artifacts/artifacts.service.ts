@@ -24,7 +24,6 @@ import {
     ContentTypes
 } from "@apicurio/registry-models";
 import {BaseService} from "../baseService";
-import YAML from "yaml";
 
 export interface CreateArtifactData {
     id: string|null;
@@ -249,11 +248,12 @@ export class ArtifactsService extends BaseService {
     }
 
     private isYaml(content: string): boolean {
-        try {
-            const parsedContent: any = YAML.parse(content);
-            return typeof parsedContent === "object";
-        } catch (e) {
-            return false;
-        }
+        return false;
+        // try {
+        //     const parsedContent: any = YAML.parse(content);
+        //     return typeof parsedContent === "object";
+        // } catch (e) {
+        //     return false;
+        // }
     }
 }

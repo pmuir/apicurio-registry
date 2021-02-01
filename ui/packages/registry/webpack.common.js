@@ -1,6 +1,8 @@
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const {federatedModuleName, dependencies} = require("./package.json");
 
 module.exports = {
   entry: {
@@ -9,10 +11,40 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html'
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.container.ModuleFederationPlugin({
+      name: federatedModuleName,
+      filename: "remoteEntry.js",
+      exposes: {
+        "./ArtifactsPage": "./src/app/pages/artifacts",
+      },
+      shared: {
+        ...dependencies,
+        react: {
+          eager: true,
+          singleton: true,
+          requiredVersion: dependencies["react"],
+        },
+        "react-dom": {
+          eager: true,
+          singleton: true,
+          requiredVersion: dependencies["react-dom"],
+        },
+      },
     })
   ],
   module: {
     rules: [
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
       {
         test: /\.(tsx|ts)?$/,
         include: path.resolve(__dirname, 'src'),
@@ -112,13 +144,18 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.mjs', '.jsx'],
     plugins: [
       new TsconfigPathsPlugin({
         configFile: path.resolve(__dirname, './tsconfig.json')
       })
     ],
     symlinks: false,
-    cacheWithContext: false
-  },
+    cacheWithContext: false,
+    alias: {
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+      buffer: require.resolve("buffer")
+    }
+  }
 };

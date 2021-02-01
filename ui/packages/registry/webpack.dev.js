@@ -1,7 +1,7 @@
 const path = require('path');
-const merge = require("webpack-merge");
+const {merge} = require("webpack-merge");
 const common = require("./webpack.common.js");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || "8888";
@@ -10,8 +10,8 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "eval-source-map",
   plugins: [
-    new CopyWebpackPlugin([{from: './src/version.js'}]),
-    new CopyWebpackPlugin([{from: './src/config.js'}])
+    new CopyPlugin({ patterns: [{from: './src/version.js', to: 'version.js'}] }),
+    new CopyPlugin({ patterns: [{from: './src/config.js', to: 'config.js'}] })
   ],
   output: {
     publicPath: "/"
