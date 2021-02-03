@@ -5,6 +5,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || "8888";
+const PROTOCOL = "http";
+
+const publicPath = `${PROTOCOL}://${HOST}:${PORT}/`;
 
 module.exports = merge(common, {
   mode: "development",
@@ -14,7 +17,8 @@ module.exports = merge(common, {
     new CopyPlugin({ patterns: [{from: './src/config.js', to: 'config.js'}] })
   ],
   output: {
-    publicPath: "/"
+    // This must be set explicitly for module federation
+    publicPath
   },
   devServer: {
     contentBase: "./dist",

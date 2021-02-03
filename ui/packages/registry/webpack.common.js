@@ -20,7 +20,7 @@ module.exports = {
       name: federatedModuleName,
       filename: "remoteEntry.js",
       exposes: {
-        "./ArtifactsPage": "./src/app/pages/artifacts",
+        "./ArtifactsPage": "./src/app/pages/artifacts/federated",
       },
       shared: {
         ...dependencies,
